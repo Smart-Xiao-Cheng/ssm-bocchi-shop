@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="./lib/bootstrap-icons/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./dist/css/bootstrap-admin.min.css">
+    <title>个人资料</title>
+</head>
+<body class="bg-body-tertiary py-3">
+<div class="container-fluid">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body">
+            设置我的资料
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <form id="form">
+                        <div class="row mb-3">
+                            <label for="role" class="col-sm-3 col-form-label text-sm-end">我的角色</label>
+                            <div class="col-sm-9">
+                                <select class="form-select" name="role" aria-label="role" id="role">
+                                    <option value="1" disabled>超级管理员</option>
+                                    <option value="2" disabled>普通管理员</option>
+                                    <option value="3" disabled>商家</option>
+                                    <option value="4" disabled>订单管理员</option>
+                                </select>
+                                <div class="form-text">当前角色不可更改为其它角色</div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-3">
+                            <label for="username" class="col-sm-3 col-form-label text-sm-end">用户名</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="username" name="username" readonly value="admin88" disabled>
+                                <div class="form-text">不可修改。一般用于后台登入名</div>
+                            </div>
+                        </div>
+<!--                        <div class="row mb-3">-->
+<!--                            <label for="nickname" class="col-sm-3 col-form-label text-sm-end">昵称</label>-->
+<!--                            <div class="col-sm-9">-->
+<!--                                <input type="text" class="form-control" id="nickname" name="nickname" value="欲饮琵琶码上催" >-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label text-sm-end">性别</label>
+                            <div class="col-sm-9">
+                                <div class="d-flex align-items-center h-100">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" id="genderMale" value="0" checked>
+                                        <label class="form-check-label" for="genderMale">男</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="1">
+                                        <label class="form-check-label" for="genderFemale">女</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label text-sm-end">头像</label>
+                            <div class="col-sm-9">
+                                <div class="input-group mb-3">
+                                    <input type="file" class="form-control" id="avatar" name="avatar" >
+                                    <label class="input-group-text" for="avatar"><i class="bi bi-cloud-upload"></i> 上传图片</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="phone" class="col-sm-3 col-form-label text-sm-end">手机</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="phone" name="phone" value="19978451354" >
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="email" class="col-sm-3 col-form-label text-sm-end">邮箱</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="email" name="email" value="lujiahao@88.com" >
+                            </div>
+                        </div>
+<!--                        <div class="row mb-3">-->
+<!--                            <label for="desc" class="col-sm-3 col-form-label text-sm-end">备注</label>-->
+<!--                            <div class="col-sm-9">-->
+<!--                                <textarea class="form-control" id="desc" rows="3" name="desc"></textarea>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="row mb-3">
+                            <div class="col-sm-9 offset-sm-3">
+                                <button type="submit" class="btn btn-primary">确认修改</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--回到顶部开始-->
+<a href="javaScript:" class="bsa-back-to-top"><i class='bi bi-arrow-up-short'></i></a>
+<!--回到顶部结束-->
+
+<script src="./lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./lib/jquery/dist/jquery.min.js"></script>
+<script src="./lib/formvalidation/js/formValidation.js"></script>
+<script src="./lib/formvalidation/js/framework/bootstrap.js"></script>
+<script src="./lib/formvalidation/js/language/zh_CN.js"></script>
+<script src="./dist/js/bootstrap-admin.min.js"></script>
+<script src="./lib/sweetalert2/dist/sweetalert2.all.min.js"></script>
+<script src="./dist/js/app.js"></script>
+
+
+<script>
+    // 前端表单验证
+    $('#form').formValidation({
+        fields: {
+            username: {
+                validators: {
+                    notEmpty: true,
+                }
+            },
+            phone: {
+                validators: {
+                    notEmpty: true,
+                }
+            },
+            email: {
+                validators: {
+                    notEmpty: true,
+                    emailAddress: true
+                }
+            }
+        }
+    }).on('success.form.fv', function (e) {
+        // 阻止表单提交
+        e.preventDefault();
+        // 得到表单对象
+        let $form = $(e.target);
+        let data = $form.serialize();
+
+        // 创建一个FormData对象，只包含新的头像
+        var file = $('#avatar')[0].files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+
+        // 发起Ajax请求，上传头像
+        $.ajax({
+            url: '/admin/profile/updateAvatar',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if(response.status === 'success') {
+                    // alert('头像上传成功');
+                    // $('#avatar').attr('src', response.imageUrl);
+
+                } else {
+                    alert('头像上传失败: ' + response.message);
+                }
+            }
+        });
+
+
+        // 发起Ajax请求
+        $.ajax({
+            url: "/admin/profile/update",
+            method: 'POST',
+            data: data
+        }).then(function (res) {
+            if (res.status === 'success') {
+                // 更新成功
+                // alert('信息更新成功' + res.message);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: '信息更新成功'
+                })
+            } else {
+                // 更新失败
+                alert('信息更新失败: ' + res.message);
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $.ajax({
+            url: '/admin/profile/info',
+            type: 'GET',
+            success: function(admin) {
+                $('#role option[value="' + admin.role + '"]').prop('selected', true);
+                $('#username').val(admin.adminName);
+                $('input[name="gender"][value="' + admin.gender + '"]').prop('checked', true);
+                $('#phone').val(admin.phone);
+                $('#email').val(admin.email);
+            }
+        });
+
+
+
+    });
+</script>
+
+</body>
+</html>

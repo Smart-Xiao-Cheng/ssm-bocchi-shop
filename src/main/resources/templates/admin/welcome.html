@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="./lib/bootstrap-icons/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./dist/css/bootstrap-admin.min.css">
+    <title>首页</title>
+</head>
+<body class="bg-body-tertiary py-3">
+<div class="container-fluid">
+  <div class="row g-3">
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="me-1">
+              <h6 class="mb-2 bsa-ellipsis-1 ">总收入</h6>
+              <h4 class="mb-1 bsa-ellipsis-1" id="totalIncome"></h4>
+            </div>
+            <i class="bi bi-currency-yen fs-1 text-danger"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="me-1">
+              <h6 class="mb-2 bsa-ellipsis-1">用户总数</h6>
+              <h4 class="mb-1 bsa-ellipsis-1" id="totalUsers"></h4>
+            </div>
+            <i class="bi bi-people fs-1 text-info"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="me-1">
+              <h6 class="mb-2 bsa-ellipsis-1">订单总数</h6>
+              <h4 class="mb-1 bsa-ellipsis-1" id="totalOrders"></h4>
+            </div>
+            <i class="bi bi-clipboard-check fs-1 text-primary"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="me-1">
+              <h6 class="mb-2 bsa-ellipsis-1">留言</h6>
+              <h4 class="mb-1 bsa-ellipsis-1">1000</h4>
+            </div>
+            <i class="bi bi-chat fs-1 text-success"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-3">
+    <div class="col-lg-6 mb-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body">
+          近七天订单量
+        </div>
+        <div class="card-body">
+          <canvas id="chart-bar"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body">
+          近七天营业额走势
+        </div>
+        <div class="card-body">
+          <canvas id="chart-line"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-12 mt-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-body">
+        订单摘要
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+            <tr>
+              <th>订单号</th>
+              <th>下单人</th>
+              <th>下单日期</th>
+              <th>价格</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+            </thead>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="./lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./lib/jquery/dist/jquery.min.js"></script>
+<script src="./lib/chart.js/dist/chart.umd.js"></script>
+<script src="./dist/js/bootstrap-admin.min.js"></script>
+<script src="./dist/js/app.js"></script>
+<script>
+  $(document).ready(function() {
+    $.ajax({
+      url: '/admin/welcome/orders/sevenDays',
+      method: 'GET',
+      success: function(data) {
+        data.reverse(); // 反转数据
+        var labels = data.map(function(item) {
+          return item.orderDate;
+        });
+        var counts = data.map(function(item) {
+          return item.orderCount;
+        });
+        new Chart(document.getElementById('chart-bar').getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: '订单数',
+              data: counts,
+              backgroundColor: 'rgba(52,143,80, 0.6)',
+              borderColor: 'rgba(52,143,80, 0.6)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
+    });
+
+    $(document).ready(function() {
+      $.ajax({
+        url: '/admin/welcome/orders/sevenDaysTotalAmount',
+        method: 'GET',
+        success: function(data) {
+          data.reverse(); // 反转数据
+          var labels = data.map(function(item) {
+            return item.orderDate;
+          });
+          var amounts = data.map(function(item) {
+            return item.totalAmount;
+          });
+          new Chart(document.getElementById('chart-line').getContext('2d'), {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: '营业额 单位/元',
+                data: amounts,
+                fill: false,
+                backgroundColor: 'rgba(185,110,228,.5)',
+                borderColor: 'rgba(185,110,228,.5)',
+                tension: 0.1
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        }
+      });
+    });
+
+    $.ajax({
+      url: '/admin/welcome/dashboard',
+      method: 'GET',
+      success: function(data) {
+        $('#totalIncome').text(data.totalIncome);
+        $('#totalUsers').text(data.totalUsers);
+        $('#totalOrders').text(data.totalOrders);
+      }
+    });
+
+    //图表响应式处理
+    window.onresize = function () {
+      for (let id in Chart.instances) {
+        Chart.instances[id].resize();
+      }
+    };
+
+
+    $.ajax({
+      url: '/admin/welcome/orders/recentOrders',
+      method: 'GET',
+      success: function(data) {
+        var $table = $('table');
+        data.forEach(function(order) {
+          var $tr = $('<tr>');
+          $tr.append('<td>#' + order.orderNumber + '</td>');
+          $tr.append('<td>' + order.username + '</td>');
+
+          // 假设 order.orderDate 是一个带有时区信息的字符串，例如 "2023-12-22T10:02:01.000+00:00"
+          var date = new Date(order.orderDate);
+          var formattedDate = date.toLocaleString(); // 转换为本地日期时间格式
+          $tr.append('<td>' + formattedDate + '</td>');
+
+
+          $tr.append('<td>￥' + order.totalAmount + '</td>');
+
+          // 根据订单状态设置不同的样式
+          var statusLabel;
+          switch (order.orderStatus) {
+            case 1:
+              statusLabel = '<span class="badge bg-warning">未付款</span>';
+              break;
+            case 2:
+              statusLabel = '<span class="badge bg-primary">已付款</span>';
+              break;
+            case 3:
+              statusLabel = '<span class="badge bg-info">已发货</span>';
+              break;
+            case 4:
+              statusLabel = '<span class="badge bg-success">已完成</span>';
+              break;
+            default:
+                return '<span class="badge bg-danger">未知状态</span>';
+          }
+          $tr.append('<td>' + statusLabel + '</td>');
+
+          $tr.append('<td><div class="d-flex align-items-center"><a href="javascript:" class="btn btn-sm btn-light"><i class="bi bi-search"></i></a></div></td>');
+          $table.append($tr);
+        });
+      }
+    });
+
+  });
+
+</script>
+
+</body>
+</html>

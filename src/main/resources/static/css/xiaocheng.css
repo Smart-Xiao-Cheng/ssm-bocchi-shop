@@ -1,0 +1,98 @@
+/*边框阴影效果*/
+
+.shadow-small{
+    border-radius: 8px;
+    -webkit-box-shadow: 0 4px 8px 6px rgba(7,17,27,0.06);
+    box-shadow: 0 4px 8px 6px rgba(7,17,27,0.06);
+    -webkit-transition: box-shadow 0.3s;
+    -moz-transition: box-shadow 0.3s;
+    -o-transition: box-shadow 0.3s;
+    -ms-transition: box-shadow 0.3s;
+    transition: box-shadow 0.3s;
+}
+
+.shadow-small:hover{
+    -webkit-box-shadow: 0 4px 12px 12px rgba(7,17,27,0.15);
+    box-shadow: 0 4px 12px 12px rgba(7,17,27,0.15);
+}
+
+/*文字居中显示*/
+.text-center{
+    text-align: center;
+    margin: 0 auto;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.font-size-article-header{
+    font-size: 1.9em;
+    line-height: 1.6;
+}
+
+/*随机诗词*/
+.yiyan {
+    margin-top: 70px;
+    padding: 0 20px;
+    height: 45px;
+    line-height: 45px;
+    position: relative;
+    display: inline-block;
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+    left: 210px;
+    align-content: center;
+}
+
+/*主页开头语*/
+.preface {
+    margin-top: 30px;
+    padding: 0 20px;
+    height: 45px;
+    line-height: 45px;
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+    left: 210px;
+    align-content: center;
+}
+
+/*导航栏*/
+.navbar {
+    margin-bottom: 30px;
+}
+/*搜索框*/
+.search-bar {
+    border-radius: 20px;
+}
+
+
+.search-btn-icon{
+    margin-left: 5px;
+}
+
+/*字体大小*/
+.font-size-lg{
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.card-custom {
+    transform: scale(0.8);
+}
+
+.footer{
+    border-top: 1px solid #e7e7e7;
+}
+
+.margin-tb-large{
+    margin: 30px 0px !important;
+}
+
+/*订单子表格*/
+.sub-table-padding {
+    padding: 0px !important;
+}
+

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="./lib/bootstrap-icons/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./dist/css/bootstrap-admin.min.css">
+    <title>商品新增</title>
+</head>
+<body class="bg-body-tertiary py-3">
+<div class="container-fluid">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form id="form">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">商品名称</label>
+                            <input type="text" class="form-control" id="productName" name="productName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">价格</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="price" name="price">
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">数量</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label text-sm-end">商品图片</label>
+                            <div class="col-sm-9">
+                                <div for="productImage" class="input-group mb-3">
+                                    <input type="file" class="form-control" id="productImage" name="productImage" >
+                                    <label class="input-group-text" for="productImage"><i class="bi bi-cloud-upload"></i>上传图片</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">商品描述</label>
+                            <textarea type="text" class="form-control" id="productDescription" name="productDescription"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">添加</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!--回到顶部开始-->
+<a href="javaScript:" class="bsa-back-to-top"><i class='bi bi-arrow-up-short'></i></a>
+<!--回到顶部结束-->
+
+
+
+<script src="./lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./lib/jquery/dist/jquery.min.js"></script>
+<script src="./lib/formvalidation/js/formValidation.js"></script>
+<script src="./lib/formvalidation/js/framework/bootstrap.js"></script>
+<script src="./lib/formvalidation/js/language/zh_CN.js"></script>
+<script src="./dist/js/bootstrap-admin.min.js"></script>
+<script src="./dist/js/app.js"></script>
+
+
+
+<script>
+
+
+    $("#form").formValidation({
+        //验证字段
+        fields: {
+            productName: {
+                validators: {
+                    notEmpty: true
+                }
+            },
+            price: {
+                validators: {
+                    notEmpty: true,
+                    numeric: {
+                        message: '价格必须是数字'
+                    }
+                }
+            },
+            productDescription: {
+                validators: {
+                    notEmpty: true
+                }
+            },
+            //...
+        }
+    }).on('success.form.fv', function (e) {
+        //阻止表单提交
+        e.preventDefault();
+        //得到表单对象
+        let $form = $(e.target);
+        let data = $form.serialize();
+
+        // 创建一个FormData对象，只包含新的图片
+        var file = $('#productImage')[0].files[0];
+        var productName = $('#productName').val();
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('productName', productName);
+
+
+        //得到序列化数据
+        $.ajax({
+            url: "/admin/product/add",
+            method: 'post',
+            data: data,
+            success: function (res) {
+                if (res.status === 'success') {
+                    $.toasts({
+                        type: 'success',
+                        content: '添加成功',
+                        delay: 1000,
+                        autohide: true,
+                        onHidden: function () {
+                            parent.modalInstance.setData(true);
+                            parent.modalInstance.close();
+                        }
+                    });
+                } else {
+                    // Handle error case
+                    $.toasts({
+                        type: 'error',
+                        content: '添加失败: ' + res.message,
+                        delay: 1000,
+                        autohide: true
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle AJAX error
+                console.error("AJAX Error:", status, error);
+                // Show an error message to the user if needed
+            }
+        });
+
+
+        // 发起Ajax请求，上传头像
+        $.ajax({
+            url: '/admin/product/addImage',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if(response.status === 'success') {
+                    alert('头像上传成功');
+                    $('#avatar').attr('src', response.imageUrl);
+
+                } else {
+                    alert('头像上传失败: ' + response.message);
+                }
+            }
+        });
+
+    });
+
+
+</script>
+</body>
+</html>

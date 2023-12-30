@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" th:href="@{/css/xiaocheng.css}">
+</head>
+<body>
+<div class="container">
+    <div class="d-flex justify-content-center align-items-center" style="margin-top: 100px">
+        <div class="col-md-4">
+            <div class="shadow-small">
+                <div class="card-header text-center">登录</div>
+                <div class="card-body">
+                    <form id="loginForm" method="post" th:action="@{/login/verify}">
+                        <div class="form-group">
+                            <label for="username">用户名:</label>
+                            <input type="text" id="username" name="username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">密码:</label>
+                            <input type="password" id="password" name="password1" class="form-control" required>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <a href="/register" class="btn btn-outline-info mr-4">注册</a>
+                            <button type="submit" class="btn btn-outline-dark">登录</button>
+                            <button type="reset" class="btn btn-outline-primary ml-4">清空</button>
+                        </div>
+                        <div id="errorMsg" class="text-danger"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--    <div class="yiyan animate__animated animate__bounceInUp">-->
+<!--        <p id="randomSentence"></p>-->
+<!--    </div>-->
+</div>
+
+<!-- 登录成功的模态框 -->
+<div class="modal fade" id="loginSuccessModal" tabindex="-1" role="dialog" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginSuccessModalLabel">登录成功</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                恭喜你，登录成功！
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 登录失败的模态框 -->
+<div class="modal fade" id="loginFailModal" tabindex="-1" role="dialog" aria-labelledby="loginFailModalLabel" aria-hidden="true" th:if="${session.loginFail}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="loginFailModalLabel">登录失败</h5>
+                <button type="button" class="close ml-0" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                请检查你的用户名和密码
+            </div>
+            <div class="modal-footer">
+                <form th:action="@{/login/clearLoginFail}" method="get">
+                    <button type="submit" class="btn btn-secondary">关闭</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        if ([[${session.loginFail}]] === true) {
+            $('#loginFailModal').modal('show');
+        }
+    });
+</script>
+<!-- 引入 Bootstrap JS 和 jQuery -->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/background-effects.js}"></script>
+
+</body>
+
+<script>
+    var sentences = [
+        "树深时见鹿，溪午不闻钟。 一一《访戴天山道士不遇》李白",
+        "晚来天欲雪，能饮一杯无？ 一一《问刘十九》白居易",
+        "惟江上之清风，与山间之明月。耳得之而为声，目遇之而成色。 一一《赤壁赋》苏轼",
+        "当时轻别意中人，山长水远知何处。 一一《踏莎行•碧海无波》晏殊",
+        "南风知我意，吹梦到西洲。 一一《西洲曲》佚名",
+        "海水梦悠悠，君愁我亦愁。 一一《西洲曲》佚名",
+        "与君初相识，犹如故人归。 ——佚名",
+        "云青青兮欲雨，水澹澹兮生烟。 一一《梦游天姥吟留别》李白",
+        "今宵酒醒何处？杨柳岸，晓风残月。 一一《雨霖铃》柳永 ",
+        "山中何事，松花酿酒，春水煎茶。 一一《人月圆•山中书事》张可久 ",
+        "醉后不知天在水，满船清梦压星河。 一一《题龙阳县青草湖》唐温如 "
+    ];
+
+    function displayRandomSentence() {
+
+        var randomIndex = Math.floor(Math.random() * sentences.length);
+
+
+        document.getElementById("randomSentence").innerText = sentences[randomIndex];
+    }
+
+    displayRandomSentence();
+</script>
+<script>
+    $(document).ready(function() {
+        if ([[${session.loginFail}]] != null) {
+            $('#loginFailModal').modal('show');
+        }
+    });
+</script>
+</html>

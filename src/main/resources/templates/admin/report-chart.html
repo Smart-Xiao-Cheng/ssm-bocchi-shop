@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./lib/bootstrap-icons/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./lib/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./lib/bootstrap-table/dist/bootstrap-table.min.css">
+  <link rel="stylesheet" href="./lib/bootstrap-table/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.css">
+  <link rel="stylesheet" href="./lib/@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css"/>
+  <link rel="stylesheet" href="./lib/bootstrap-select/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="./dist/css/bootstrap-admin.min.css">
+  <title>图表分析</title>
+</head>
+<body class="bg-body-tertiary py-3">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body">
+          商品种类销量分析
+        </div>
+        <div class="card-body">
+          <canvas id="chart3"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 mt-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-body">
+          商品种类销售占比分析
+        </div>
+        <div class="card-body" style="margin-top: 26px">
+          <canvas id="chart4"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<script src="./lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./lib/jquery/dist/jquery.min.js"></script>
+<script src="./lib/@popperjs/core/dist/umd/popper.min.js"></script>
+<script src="./lib/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+<script src="./lib/@eonasdan/tempus-dominus/dist/js/tempus-dominus.min.js"></script>
+<script src="./lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+<script src="./lib/bootstrap-table/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="./lib/bootstrap-table/dist/extensions/fixed-columns/bootstrap-table-fixed-columns.min.js"></script>
+<script src="./lib/bootstrap-select/dist/js/i18n/defaults-zh_CN.min.js"></script>
+<script src="./dist/js/bootstrap-admin.min.js"></script>
+<script src="./lib/chart.js/dist/chart.umd.js"></script>
+<script src="./dist/js/app.js"></script>
+
+<script>
+    new Chart(document.getElementById('chart3').getContext('2d'), {
+        type: 'bar',  // 默认类型为条形图
+        data: {
+            labels: ['0时', '2时', '4时', '6时', '8时', '10时', '12时', '14时', '16时', '18时', '20时', '22时'],  // 修改为每两小时的时间点
+            datasets: [
+                {
+                    type: 'line',  // 这个数据集的类型为折线图
+                    label: '水果',
+                    data: [65, 60, 40, 120, 70, 50, 65, 60, 40, 120, 70, 50],  // 修改为每两小时的水果销售信息
+                    fill: false,
+                    borderColor: 'rgb(241,237,5)',
+                    backgroundColor: 'rgb(241,237,5)',
+                    tension: 0.1,
+                    cubicInterpolationMode: 'monotone',
+                },
+                {
+                    type: 'line',  // 这个数据集的类型为折线图
+                    label: '书籍',
+                    data: [30, 70, 64, 10, 30, 50, 30, 70, 64, 10, 30, 50],  // 修改为每两小时的书籍销售信息
+                    fill: false,
+                    borderColor: 'rgba(78,195,238,0.84)',
+                    backgroundColor: 'rgba(78,195,238,0.84)',
+                    tension: 0.1,
+                    cubicInterpolationMode: 'monotone',
+                },
+                {
+                    type: 'line',  // 这个数据集的类型为折线图
+                    label: '电器',
+                    data: [10, 54, 73, 110, 130, 150, 10, 54, 73, 110, 130, 150],  // 修改为每两小时的电器销售信息
+                    fill: false,
+                    borderColor: 'rgba(239,21,64,0.73)',
+                    backgroundColor: 'rgba(239,21,64,0.73)',
+                    tension: 0.1,
+                    cubicInterpolationMode: 'monotone',
+                }
+            ]
+        },
+        options: {
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        // 在这里添加单位
+                        callback: function(value, index, values) {
+                            return value + ' 件';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true
+                },
+
+
+            }
+        }
+    });
+
+    new Chart(document.getElementById('chart4').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['水果', '书籍', '电器'],  // 修改为 '水果'、'书籍' 和 '电器'
+            datasets: [{
+                data: [300, 50, 150],  // 修改为水果、书籍和电器的销售量
+                backgroundColor: [
+                    '#e03626',
+                    '#e77e41',
+                    '#ffe8b5'
+                ],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: '商品销售量占比图'  // 修改标题为 '商品销售量占比图'
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

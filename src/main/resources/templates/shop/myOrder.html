@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>我的订单</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/xiaocheng.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+</head>
+<body>
+<!--  导航栏-->
+<div class="container">
+    <nav class="navbar navbar-expand-md border-bottom">
+        <!--    logo-->
+        <a class="navbar-brand" th:href="@{/}">
+            <img th:src="@{/image/logo.jpg}" alt="logo" height="40">
+            小孤独小卖部
+        </a>
+
+        <!--        搜索框-->
+
+        <form class="form-inline mr-auto" action="#" th:action="@{/search}" method="get" style="margin-bottom: 0px">
+            <div class="input-group">
+                <input type="search" name="keyword" class="form-control d-none d-md-block search-bar" placeholder="请输入商品名称">
+            </div>
+            <div class="input-group-append search-btn-icon">
+                <button class="btn" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+
+
+        <div class="collapse navbar-collapse justify-content-end" id="headerNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/}">首页</a>
+                </li>
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/products}">商品列表</a>
+                </li>
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/cart}">购物车</a>
+                </li>
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/order}">我的订单</a>
+                </li>
+                <li class="nav-item font-size-lg" th:if="${session.isLogin == null || !session.isLogin}">
+                    <a class="nav-link" th:href="@{/login}">登录</a>
+                </li>
+                <li class="nav-item font-size-lg" th:if="${session.isLogin == null || !session.isLogin}">
+                    <a class="nav-link" th:href="@{/register}">注册</a>
+                </li>
+                <li class="nav-item font-size-lg" th:if="${session.isLogin}">
+                    <a class="nav-link" href="#">[[${session.user.userName}]]</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="container mt-5">
+    <h2>我的订单</h2>
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th scope="col">订单号</th>
+            <th scope="col">下单时间</th>
+            <th scope="col">总金额</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="animate__animated animate__zoomIn" th:each="order : ${session.orders}">
+            <td th:text="${order.getOrderId()}"></td>
+            <td th:text="${order.getOrderDate()}"></td>
+            <td>￥<span th:text="${order.getTotalAmount()}"></span></td>
+            <td>
+                <button class="btn btn-outline-dark" type="button">
+                    查看详情
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+<!-- 引入 Bootstrap JS 和 jQuery -->
+
+<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/background-effects.js}"></script>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>购物车</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/xiaocheng.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        // 用于将购物车中的商品数量更新到表单中
+        $(document).ready(function() {
+            $('.update-form').on('submit', function() {
+                var productId = $(this).find('input[name="updateProductId"]').val();
+                var quantity = $('#quantity_' + productId).val();
+                $(this).find('.quantity-input').val(quantity);
+            });
+        });
+    </script>
+</head>
+<body>
+
+<!--  导航栏-->
+<div class="container">
+    <nav class="navbar navbar-expand-md border-bottom">
+        <!--    logo-->
+        <a class="navbar-brand" th:href="@{/}">
+            <img th:src="@{/image/logo.jpg}" alt="logo" height="40">
+            小孤独小卖部
+        </a>
+
+        <!--        搜索框-->
+
+        <form class="form-inline mr-auto" action="#" th:action="@{/search}" method="get" style="margin-bottom: 0px">
+            <div class="input-group">
+                <input type="search" name="keyword" class="form-control d-none d-md-block search-bar" placeholder="请输入商品名称">
+            </div>
+            <div class="input-group-append search-btn-icon">
+                <button class="btn" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+
+
+        <div class="collapse navbar-collapse justify-content-end" id="headerNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/}">首页</a>
+                </li>
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/products}">商品列表</a>
+                </li>
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/cart}">购物车</a>
+                </li>
+                <li class="nav-item font-size-lg">
+                    <a class="nav-link" th:href="@{/order}">我的订单</a>
+                </li>
+                <li class="nav-item font-size-lg" th:if="${session.isLogin == null || !session.isLogin}">
+                    <a class="nav-link" th:href="@{/login}">登录</a>
+                </li>
+                <li class="nav-item font-size-lg" th:if="${session.isLogin == null || !session.isLogin}">
+                    <a class="nav-link" th:href="@{/register}">注册</a>
+                </li>
+                <li class="nav-item font-size-lg" th:if="${session.isLogin}">
+                    <a class="nav-link" href="#">[[${session.user.userName}]]</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<!-- 购物车内容 -->
+<div class="container mt-5">
+    <h2>购物车</h2>
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th scope="col" style="width: 20%">商品名称</th>
+            <th scope="col" style="width: 20%">价格</th>
+            <th scope="col" style="width: 20%">数量</th>
+            <th scope="col" style="width: 20%">小计</th>
+            <th scope="col" style="width: 20%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 从会话中获取购物车列表 -->
+        <tr class="animate__animated animate__flipInX" th:each="entry : ${session.shoppingCartMap}">
+            <td th:text="${entry.key.productName}"></td>
+            <td>¥<span th:text="${entry.key.price}"></span></td>
+            <td class="d-flex justify-content-center">
+                <input type="number" th:id="'quantity_' + ${entry.key.productId}" name="quantity" th:value="${entry.value}" min="1" class="form-control" style="width: 80px">
+            </td>
+            <td>¥<span th:text="${entry.key.price * entry.value}"></span></td>
+            <td>
+                <div class="d-flex justify-content-around gap-2">
+                    <form th:action="@{/deleteCartItem}" method="get">
+                        <input type="hidden" name="deleteProductId" th:value="${entry.key.productId}">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">删除</button>
+                    </form>
+                    <form th:action="@{/updateCartItem}" method="post" class="update-form">
+                        <input type="hidden" name="updateProductId" th:value="${entry.key.productId}">
+                        <input type="hidden" name="quantity" class="quantity-input">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">更新</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="text-right mt-3">
+        <!-- 从会话中获取总金额 -->
+        <h4 class="mb-2">总计: ¥<span th:text="${session.totalAmount}"></span></h4>
+        <!-- 修改结算按钮 -->
+        <div id="checkoutForm" style="display: inline;">
+            <button type="button" id="checkoutButton" class="btn btn-outline-dark">结算</button>
+        </div>
+        <!-- 添加清空购物车按钮 -->
+        <form th:action="@{/clearShoppingCart}" method="get" style="display: inline;">
+            <button type="submit" class="btn btn-outline-danger">清空购物车</button>
+        </form>
+    </div>
+</div>
+
+<!-- 超出库存的商品模态框 -->
+<div class="modal fade" id="overQuantityModal" tabindex="-1" role="dialog" aria-labelledby="overQuantityModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="overQuantityModalLabel">库存不足</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p th:each="entry : ${session.overQuantityMap}" th:text="${entry.key.name + ' 的库存只有 ' + entry.value + ' 件'}"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!-- 引入 Bootstrap JS 和 jQuery -->
+
+<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/background-effects.js}"></script>
+<script>
+    $(document).ready(function() {
+        if ($('#overQuantityModal .modal-body p').length > 0) {
+            $('#overQuantityModal').modal('show');
+        }
+
+        // 当模态框被隐藏时，删除overQuantityMap会话属性
+        $('#overQuantityModal').on('hidden.bs.modal', function (e) {
+            $.get('/removeOverQuantityMap');
+        });
+
+
+
+        $('#checkoutButton').click(function() {
+            $.ajax({
+                url: '/checkout',
+                method: 'GET',
+            }).then(response => {
+                // 处理响应
+                // 这里的代码取决于你期望的响应格式和处理方式
+            });
+        });
+
+
+    });
+
+
+</script>
+<script>
+
+</script>
+</html>
