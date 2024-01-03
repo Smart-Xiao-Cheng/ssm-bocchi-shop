@@ -19,6 +19,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -332,7 +334,7 @@ public class AdminController {
 
     @PostMapping("/profile/updateAvatar")
     @ResponseBody
-    public Map<String, String> updateAdminAvatar(@RequestPart("file") MultipartFile file, HttpSession session) {
+    public Map<String, String> updateAdminAvatar(@RequestPart("file") MultipartFile file, HttpSession session) throws IOException {
         Map<String, String> response = new HashMap<>();
         Admin sessionAdmin = (Admin) session.getAttribute("admin");
         if(sessionAdmin == null) {
@@ -345,23 +347,35 @@ public class AdminController {
             response.put("message", "文件为空");
             return response;
         }
+        // resources下的资源文件夹路径
+        String resourcePath = "/static/image/avatar/";
+        // 获取资源文件夹的绝对路径
+        ClassPathResource classPathResource = new ClassPathResource(resourcePath);
+        // 获取文件夹的File对象
+        File folder = classPathResource.getFile();
         // 获取文件的扩展名
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         // 使用管理员的id作为文件名
         String fileName = sessionAdmin.getAdminId() + extension;
-        File dest = new File(uploadPath + fileName);
+        if (!folder.isDirectory()) {
+            folder.mkdirs();
+        }
+        File dest = new File(folder, fileName);
         // 如果存在同名的文件，先删除这个文件
-        if(dest.exists()) {
+        if (dest.exists()) {
             dest.delete();
         }
         try {
+            // 将上传的文件移动到dest下
             file.transferTo(dest);
+//            file.transferTo(sourcefile);
             sessionAdmin.setImageUrl("image/avatar/" + fileName);
             adminService.updateAdminByName(sessionAdmin);
             response.put("status", "success");
             response.put("message", "头像上传成功");
             response.put("imageUrl", "image/avatar/" + fileName);
             session.setAttribute("admin", sessionAdmin);
+            session.setAttribute("currentTimeMillis", System.currentTimeMillis());
         } catch (IOException e) {
             response.put("status", "fail");
             response.put("message", "头像上传失败: " + e.getMessage());

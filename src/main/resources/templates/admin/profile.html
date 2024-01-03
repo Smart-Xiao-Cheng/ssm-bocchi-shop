@@ -171,6 +171,8 @@
             data: data
         }).then(function (res) {
             if (res.status === 'success') {
+                // 头像上传成功，重定向到 /admin 页面
+                window.location.href = '/admin';
                 // 更新成功
                 // alert('信息更新成功' + res.message);
                 const Toast = Swal.mixin({
